@@ -17,4 +17,4 @@ samples, guidance on mobile development, and a full API reference.
 
 
 ### Splash Screen:
-<img src="![Splash Screen](https://github.com/user-attachments/assets/3d956545-fc6a-4e49-aa05-67bf2fe07eb1)" width="300"/>
+<img src="https://github.com/user-attachments/assets/3d956545-fc6a-4e49-aa05-67bf2fe07eb1" width="300"/>
