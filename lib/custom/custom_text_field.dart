@@ -33,7 +33,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(10),
               color: Colors.white.withOpacity(.2),
             ),
             child: TextFormField(

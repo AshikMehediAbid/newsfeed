@@ -1,4 +1,5 @@
 import 'package:ezycourse_my_project/custom/custom_text_field.dart';
+import 'package:ezycourse_my_project/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -15,13 +16,15 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.teal.shade700,
+
       // appBar: AppBar(
       //   backgroundColor: Colors.teal.shade700,
       // ),
+
       body: Column(
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(height: 100),
+          SizedBox(height: 70),
           Expanded(
             child: Image.asset("assets/images/ezyCourseSignUp.png"),
           ),
@@ -29,9 +32,18 @@ class _SignInScreenState extends State<SignInScreen> {
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.teal,
+                color: Colors.teal.shade800,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    spreadRadius: 2,
+                    offset: Offset(0, -1),
+                    blurRadius: 6,
+                    blurStyle: BlurStyle.solid,
+                  ),
+                ],
                 borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(20),
+                  top: Radius.circular(30),
                 ),
               ),
               child: Padding(
@@ -54,7 +66,10 @@ class _SignInScreenState extends State<SignInScreen> {
                       title: "Password",
                       hintText: "Enter your password",
                       isObscure: true,
-                      icon: Icon(Icons.remove_red_eye),
+                      icon: Icon(
+                        Icons.remove_red_eye_outlined,
+                        color: Colors.white,
+                      ),
                     ),
                     Row(
                       children: [
@@ -83,11 +98,17 @@ class _SignInScreenState extends State<SignInScreen> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(10),
                         color: Colors.yellowAccent.shade200,
                       ),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                          );
+                        },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Text(
