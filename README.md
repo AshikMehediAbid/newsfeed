@@ -1,4 +1,4 @@
-# ezycourse_my_project
+# NewsFeed
 
 A new Flutter project.
 
