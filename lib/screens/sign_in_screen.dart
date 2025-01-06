@@ -15,12 +15,13 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.teal.shade700,
-      appBar: AppBar(
-        backgroundColor: Colors.teal.shade700,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.teal.shade700,
+      // ),
       body: Column(
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          SizedBox(height: 100),
           Expanded(
             child: Image.asset("assets/images/ezyCourseSignUp.png"),
           ),
