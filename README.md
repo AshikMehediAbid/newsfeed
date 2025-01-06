@@ -19,7 +19,13 @@ samples, guidance on mobile development, and a full API reference.
 ### Splash Screen:
 <img src="https://github.com/user-attachments/assets/3d956545-fc6a-4e49-aa05-67bf2fe07eb1" width="300"/>
 
+### Onboarding Screens
+<img src="https://github.com/user-attachments/assets/adf7e7a7-8386-495f-a406-784e4bdf1cda" width="300"/>
+<img src="https://github.com/user-attachments/assets/f08da83d-f035-444c-8418-f9d07e0df34c" width="300"/>
+<img src="https://github.com/user-attachments/assets/076493b9-c492-411a-aed1-df38ca9f2bbd" width="300"/>
+
+
 ### Sign In Screen
-<img src="https://github.com/user-attachments/assets/3b7565a8-587d-4915-b7ad-c6e9aabe3a81" width="300"/>
-<img src="https://github.com/user-attachments/assets/b8b15f08-6367-4c37-9bbd-099c2f8bf9f9" width="300"/>
+<img src="https://github.com/user-attachments/assets/c3b18a5b-ba48-4012-be24-c3c8d51c8e15" width="300"/>
+<img src="https://github.com/user-attachments/assets/60843f41-770f-4a8d-be67-ad379b62553f" width="300"/>
 
