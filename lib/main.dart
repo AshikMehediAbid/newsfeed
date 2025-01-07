@@ -1,5 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:ezycourse_my_project/screens/onboarding_screen3.dart';
+import 'package:ezycourse_my_project/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         ),
         duration: 3000,
         backgroundColor: Colors.teal.shade700,
-        nextScreen: OnboardingScreen3(),
+        nextScreen: OnboardingScreen(),
       ),
     );
   }

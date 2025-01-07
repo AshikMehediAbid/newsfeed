@@ -1,4 +1,4 @@
-import 'package:ezycourse_my_project/custom/custom_text_field.dart';
+import 'package:ezycourse_my_project/components/custom_text_field.dart';
 import 'package:ezycourse_my_project/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
