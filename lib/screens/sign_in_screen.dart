@@ -1,6 +1,7 @@
 import 'package:ezycourse_my_project/components/custom_text_field.dart';
 import 'package:ezycourse_my_project/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -16,13 +17,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.teal.shade700,
-
-      // appBar: AppBar(
-      //   backgroundColor: Colors.teal.shade700,
-      // ),
-
       body: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(height: 70),
           Expanded(
@@ -52,10 +47,10 @@ class _SignInScreenState extends State<SignInScreen> {
                   children: [
                     Text(
                       "Sign In",
-                      style: TextStyle(
+                      style: GoogleFonts.figtree(
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 38,
                       ),
                     ),
                     CustomTextField(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OnboardComponent extends StatefulWidget {
   final int? screenNo;
@@ -63,9 +64,9 @@ class _OnboardComponentState extends State<OnboardComponent> {
             SizedBox(height: 30),
             Text(
               widget.heading,
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
+              style: GoogleFonts.nunitoSans(
+                fontSize: 26.88,
+                fontWeight: FontWeight.w700,
               ),
             ),
             SizedBox(height: 20),
@@ -74,8 +75,9 @@ class _OnboardComponentState extends State<OnboardComponent> {
               child: Text(
                 widget.description,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
+                style: GoogleFonts.nunitoSans(
+                  fontSize: 17.92,
+                  fontWeight: FontWeight.w400,
                   color: Colors.grey.shade700,
                 ),
               ),

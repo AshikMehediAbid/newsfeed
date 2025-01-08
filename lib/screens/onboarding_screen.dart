@@ -65,12 +65,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           onboardingList.length,
                           (index) {
                             return Container(
-                              height: 10,
-                              width: (index == currentIndex) ? 25 : 10,
+                              height: 10.08,
+                              width: (index == currentIndex) ? 31.36 : 10.08,
                               margin: EdgeInsets.only(right: 10),
                               decoration: BoxDecoration(
                                 color: (index == currentIndex) ? Colors.teal.shade900 : Colors.grey.shade400,
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(5.6),
                               ),
                             );
                           },
@@ -78,9 +78,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
 
                       Container(
+                        width: (currentIndex == onboardingList.length - 1) ? 203.84 : 165.76,
+                        height: 63.84,
                         decoration: BoxDecoration(
                           color: Colors.teal.shade900,
-                          borderRadius: BorderRadius.circular(500),
+                          borderRadius: BorderRadius.circular(31.92),
                         ),
                         child: TextButton(
                           onPressed: () {
@@ -93,16 +95,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             }
                             _pageController.nextPage(
                               duration: Duration(milliseconds: 300),
-                              curve: Curves.ease,
+                              curve: Curves.easeOut,
                             );
                           },
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 7),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 36,
+                              vertical: 7,
+                            ),
                             child: Text(
                               (currentIndex != onboardingList.length - 1) ? "Next" : "Get Started",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 20.16,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
