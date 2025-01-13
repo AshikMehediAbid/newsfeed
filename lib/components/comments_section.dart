@@ -84,6 +84,7 @@ class _CommentsSectionState extends State<CommentsSection> {
                       ),
                     ),
                   ),
+
                   // Spacing between avatar and text field
                   Expanded(
                     child: TextField(
@@ -184,9 +185,7 @@ class _CommentsSectionState extends State<CommentsSection> {
                       color: Colors.lightGreenAccent,
                     ),
                   ),
-                ),*/ /*
-              ],
-            ),*/
+                ),*/
           )
         ],
       ),

@@ -21,7 +21,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height * .06,
+              height: MediaQuery.of(context).size.height * .02,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,7 +60,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 minLines: 6,
                 maxLines: 15,
                 decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(10),
                   hintText: "What's on your mind?",
+                  hintStyle: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                  ),
                   fillColor: backgroundColor,
                   filled: true,
                   border: InputBorder.none,

@@ -2,13 +2,39 @@ import 'package:ezycourse_my_project/components/comments_section.dart';
 import 'package:flutter/material.dart';
 
 class SinglePost extends StatefulWidget {
-  const SinglePost({super.key});
+  final String text, name, profilePic;
+  final String? pic;
+  final String updatedAt;
+  SinglePost({
+    super.key,
+    required this.text,
+    required this.name,
+    required this.profilePic,
+    this.pic,
+    required this.updatedAt,
+  });
 
   @override
   State<SinglePost> createState() => _SinglePostState();
 }
 
 class _SinglePostState extends State<SinglePost> {
+  String timeAgo(String updatedAt) {
+    DateTime updatedDateTime = DateTime.parse(updatedAt);
+    DateTime currentTime = DateTime.now().toUtc();
+    Duration difference = currentTime.difference(updatedDateTime);
+
+    if (difference.inDays > 0) {
+      return "${difference.inDays} days ago";
+    } else if (difference.inHours > 0) {
+      return "${difference.inHours} hours ago";
+    } else if (difference.inMinutes > 0) {
+      return "${difference.inMinutes} minutes ago";
+    } else {
+      return "Just now";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,23 +46,23 @@ class _SinglePostState extends State<SinglePost> {
       child: Column(
         children: [
           ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.grey[200],
-              child: Icon(
-                Icons.person,
-                size: 35,
-                color: Colors.grey,
+            leading: ClipOval(
+              child: Image.network(
+                widget.profilePic,
+                fit: BoxFit.fill,
+                width: 50,
+                height: 50,
               ),
             ),
             title: Text(
-              "Alexander John",
+              widget.name,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
             ),
             subtitle: Text(
-              "2 days ago",
+              timeAgo(widget.updatedAt),
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
@@ -51,7 +77,7 @@ class _SinglePostState extends State<SinglePost> {
 
           /// Post
           Text(
-            "Hello everyone   this is a post from app to see if attached link is working or not. Here is a link https://www.merriam-webster.com/dictionary/link  but I think this is not working. This should work but not working!!!!",
+            widget.text,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -66,9 +92,9 @@ class _SinglePostState extends State<SinglePost> {
             ),
             child: Container(
               width: double.infinity,
-              child: Image.asset(
+              child: Image.network(
+                widget.pic ?? "",
                 fit: BoxFit.fitWidth,
-                "assets/images/post.png",
               ),
             ),
           ),

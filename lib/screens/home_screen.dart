@@ -1,5 +1,5 @@
-import 'package:ezycourse_my_project/screens/newsfeed.dart';
-import 'package:ezycourse_my_project/screens/sign_in_screen.dart';
+import 'package:ezycourse_my_project/screens/feed/newsfeed.dart';
+import 'package:ezycourse_my_project/screens/signin/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -73,6 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
+                      SizedBox(
+                        height: 50,
+                        child: VerticalDivider(),
+                      ),
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -112,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: Colors.teal.shade700,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.people_sharp),
+            icon: Icon(Icons.groups),
             label: 'Community',
           ),
           BottomNavigationBarItem(

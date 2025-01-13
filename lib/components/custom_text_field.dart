@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatefulWidget {
   String title, hintText;
   bool isObscure;
-  Icon? icon;
-
+  IconButton? iconbtn;
+  TextEditingController text = TextEditingController();
   CustomTextField({
     required this.title,
     required this.hintText,
     this.isObscure = false,
-    this.icon,
+    required this.text,
+    this.iconbtn,
     super.key,
   });
 
@@ -37,11 +38,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
               color: Colors.white.withOpacity(.2),
             ),
             child: TextFormField(
+              controller: widget.text,
               obscureText: widget.isObscure ?? false,
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              obscuringCharacter: "*",
               decoration: InputDecoration(
+                fillColor: Colors.white,
                 hintText: widget.hintText,
-                hintStyle: TextStyle(color: Colors.white),
-                suffixIcon: widget.icon,
+                hintStyle: TextStyle(color: Colors.white54),
+                suffixIcon: widget.iconbtn,
+                suffixIconColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),

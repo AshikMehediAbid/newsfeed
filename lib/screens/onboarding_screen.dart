@@ -1,7 +1,9 @@
 import 'package:ezycourse_my_project/components/onboard_component.dart';
 import 'package:ezycourse_my_project/models/onboard_model.dart';
-import 'package:ezycourse_my_project/screens/sign_in_screen.dart';
+import 'package:ezycourse_my_project/screens/home_screen.dart';
+import 'package:ezycourse_my_project/screens/signin/sign_in_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -26,6 +28,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // TODO: implement dispose
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<bool> checkFlag() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('flag') ?? false;
   }
 
   @override
@@ -87,10 +94,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: TextButton(
                           onPressed: () {
                             if (currentIndex == onboardingList.length - 1) {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => SignInScreen(),
-                                ),
+                              FutureBuilder<bool>(
+                                future: checkFlag(),
+
+                                /// Fetch the flag asynchronously.
+                                builder: (context, snapshot) {
+                                  /// While waiting for the future to resolve, show a loading spinner.
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return Scaffold(body: const Center(child: CircularProgressIndicator()));
+                                  }
+
+                                  /// If the future resolves and the flag is true, navigate to FirstScreen.
+                                  else if (snapshot.hasData && snapshot.data == true) {
+                                    return const HomeScreen();
+                                  } else {
+                                    // Navigate to LogInScreen otherwise.
+
+                                    return const SignInScreen();
+                                  }
+                                },
                               );
                             }
                             _pageController.nextPage(
