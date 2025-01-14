@@ -1,4 +1,4 @@
-class FeedModel {
+class FeedApiResponse {
   final int id;
   final int schoolId;
   final int userId;
@@ -50,7 +50,7 @@ class FeedModel {
   final List<dynamic> comments;
   final Meta meta;
 
-  FeedModel({
+  FeedApiResponse({
     required this.id,
     required this.schoolId,
     required this.userId,
@@ -103,8 +103,8 @@ class FeedModel {
     required this.meta,
   });
 
-  factory FeedModel.fromJson(Map<String, dynamic> json) {
-    return FeedModel(
+  factory FeedApiResponse.fromJson(Map<String, dynamic> json) {
+    return FeedApiResponse(
       id: json['id'],
       schoolId: json['school_id'],
       userId: json['user_id'],

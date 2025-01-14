@@ -1,5 +1,5 @@
 import 'package:ezycourse_my_project/components/single_post.dart';
-import 'package:ezycourse_my_project/core/model/feed_api_model.dart';
+import 'package:ezycourse_my_project/core/api_response/feed_api_response/get_feed_api_model.dart';
 import 'package:ezycourse_my_project/screens/create_post_screen.dart';
 import 'package:ezycourse_my_project/screens/feed/newsfeed_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,8 +14,7 @@ class Newsfeed extends ConsumerStatefulWidget {
 }
 
 class _NewsfeedState extends ConsumerState<Newsfeed> {
-  NewsfeedController newsfeedController = NewsfeedController();
-  List<FeedModel> feedModelList = [];
+  List<FeedApiResponse> feedModelList = [];
 
   @override
   void initState() {
@@ -96,6 +95,7 @@ class _NewsfeedState extends ConsumerState<Newsfeed> {
                               builder: (context) => CreatePostScreen(),
                             ),
                           );
+                          get_Feed();
                         },
                       ),
                     ),
@@ -128,6 +128,7 @@ class _NewsfeedState extends ConsumerState<Newsfeed> {
                 text: feedModelList[index].feedText,
                 pic: feedModelList[index].pic,
                 updatedAt: feedModelList[index].updatedAt,
+                feedId: feedModelList[index].id,
               ),
             ),
 

@@ -1,17 +1,21 @@
 import 'package:ezycourse_my_project/models/color_model.dart';
+import 'package:ezycourse_my_project/screens/feed/newsfeed_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreatePostScreen extends StatefulWidget {
+class CreatePostScreen extends ConsumerStatefulWidget {
   const CreatePostScreen({super.key});
 
   @override
-  State<CreatePostScreen> createState() => _CreatePostScreenState();
+  ConsumerState<CreatePostScreen> createState() => _CreatePostScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
+class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
   bool isTapped = false;
   Icon checkBoxIcon = Icon(Icons.arrow_forward_ios);
   Color backgroundColor = Colors.white;
+  int isBackground = 0;
+  TextEditingController _text = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +49,23 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  "Create",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.blue,
+                TextButton(
+                  onPressed: () async {
+                    print("Clicked");
+                    if (_text.text.toString().trim().isNotEmpty) {
+                      String x = await ref
+                          .read(newsfeedProvider.notifier)
+                          .createPost(feed_txt: _text.text.toString().trim(), is_background: isBackground);
+                      _text.clear();
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: Text(
+                    "Create",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.blue,
+                    ),
                   ),
                 ),
               ],
@@ -57,6 +73,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             SizedBox(height: 25),
             Card(
               child: TextFormField(
+                controller: _text,
                 minLines: 6,
                 maxLines: 15,
                 decoration: InputDecoration(
@@ -84,13 +101,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   child: Card(
                     color: Colors.white,
                     child: Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(),
                       child: Icon(
                         (isTapped == false) ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                         size: 18,
                       ),
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(),
                     ),
                   ),
                 ),
@@ -103,6 +120,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               onTap: () {
                                 setState(() {
                                   backgroundColor = colorList[index].boxColor;
+
+                                  (backgroundColor != Colors.white) ? 1 : 0;
                                 });
                               },
                               child: Card(

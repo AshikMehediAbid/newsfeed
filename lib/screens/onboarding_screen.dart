@@ -30,9 +30,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
-  Future<bool> checkFlag() async {
+  Future<void> navigateBasedOnFlag() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('flag') ?? false;
+    final flag = prefs.getBool('flag') ?? false;
+
+    if (flag) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => SignInScreen()),
+      );
+    }
   }
 
   @override
@@ -94,26 +104,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: TextButton(
                           onPressed: () {
                             if (currentIndex == onboardingList.length - 1) {
-                              FutureBuilder<bool>(
-                                future: checkFlag(),
-
-                                /// Fetch the flag asynchronously.
-                                builder: (context, snapshot) {
-                                  /// While waiting for the future to resolve, show a loading spinner.
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return Scaffold(body: const Center(child: CircularProgressIndicator()));
-                                  }
-
-                                  /// If the future resolves and the flag is true, navigate to FirstScreen.
-                                  else if (snapshot.hasData && snapshot.data == true) {
-                                    return const HomeScreen();
-                                  } else {
-                                    // Navigate to LogInScreen otherwise.
-
-                                    return const SignInScreen();
-                                  }
-                                },
-                              );
+                              navigateBasedOnFlag();
                             }
                             _pageController.nextPage(
                               duration: Duration(milliseconds: 300),

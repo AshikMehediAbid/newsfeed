@@ -1,15 +1,15 @@
-class SigninApiModel {
+class SignInApiResponse {
 /*  int status;
   String message;
   Object data;*/
 
   String? type, token, msg;
 
-  SigninApiModel({this.type, this.token, this.msg});
+  SignInApiResponse({this.type, this.token, this.msg});
 
   // fromJson method to convert JSON to ApiResponse object
-  factory SigninApiModel.fromJson(Map<String, dynamic> json) {
-    return SigninApiModel(
+  factory SignInApiResponse.fromJson(Map<String, dynamic> json) {
+    return SignInApiResponse(
 /*      status: json['status'],
       message: json['message'],
       data: json['data'], // Assuming data is dynamic; could be a specific type if known*/

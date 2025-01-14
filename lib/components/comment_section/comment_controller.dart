@@ -1,30 +1,31 @@
 import 'dart:convert';
 
-import 'package:ezycourse_my_project/core/api_response/feed_api_response/get_feed_api_model.dart';
+import 'package:ezycourse_my_project/components/comment_section/comment_generic.dart';
+import 'package:ezycourse_my_project/core/api_response/comment_api_response/create_comment_response.dart';
+import 'package:ezycourse_my_project/core/api_response/comment_api_response/get_comment_api_response.dart';
 import 'package:ezycourse_my_project/core/network/api.dart';
-import 'package:ezycourse_my_project/screens/feed/newsfeed_generic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final newsfeedProvider = StateNotifierProvider<NewsfeedController, NewsfeedGeneric>(
-  (ref) => NewsfeedController(),
+final commentProvider = StateNotifierProvider<CommentController, CommentGeneric>(
+  (ref) => CommentController(),
 );
 
-class NewsfeedController extends StateNotifier<NewsfeedGeneric> {
-  NewsfeedController() : super(NewsfeedGeneric());
+class CommentController extends StateNotifier<CommentGeneric> {
+  CommentController() : super(CommentGeneric());
 
-  Future<String> createPost({required feed_txt, required int is_background}) async {
+  Future<CommentApiResponse> createComment({
+    required int feed_id,
+    required String comment_txt,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
     final _tokan = (prefs.getString('passwordToken') ?? 0);
 
     Map<String, dynamic> payload = {
-      "feed_txt": feed_txt,
-      "community_id": 2914,
-      "space_id": 5883,
-      "is_background": 0,
-      "activity_type": "group",
-      "uploadType": "text"
+      "feed_id": feed_id,
+      "comment_txt": comment_txt,
+      "commentSource": "COMMUNITY",
     };
 
     Map<String, String> headers = {
@@ -34,27 +35,23 @@ class NewsfeedController extends StateNotifier<NewsfeedGeneric> {
     };
 
     Response response = await post(
-      Uri.parse(Api.BASE_URL + Api.CREATE_POST),
+      Uri.parse(Api.BASE_URL + Api.CREATE_COMMENT),
       headers: headers,
       body: jsonEncode(payload),
     );
 
-    // CreatePostApiResponse createPostApiResponse = CreatePostApiResponse.fromJson(jsonDecode(response.body));
+    CommentApiResponse commentApiResponse = CommentApiResponse.fromJson(jsonDecode(response.body));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       print(response.body);
-      return "";
+      return commentApiResponse;
     } else {
-      print("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-      print(response.body);
-      print(response.statusCode);
-
       throw "error";
     }
   }
 
-  Future<List<FeedApiResponse>> getFeed() async {
+  Future<List<GetCommentApiResponse>> getComments(int feedl_id) async {
     final prefs = await SharedPreferences.getInstance();
     final _tokan = (prefs.getString('passwordToken') ?? 0);
 
@@ -66,25 +63,21 @@ class NewsfeedController extends StateNotifier<NewsfeedGeneric> {
       'Authorization': 'Bearer $_tokan'
     };
 
-    Map<String, dynamic> payload = {
-      "community_id": 2914,
-      "space_id": 5883,
-    };
-
-    Response response = await post(
-      Uri.parse(Api.BASE_URL + Api.FETCH_COMMUNITY),
-      body: jsonEncode(payload),
+    Response response = await get(
+      Uri.parse(Api.BASE_URL + Api.FETCH_COMMENTS + feedl_id.toString() + "?more=null"),
       headers: headers,
     );
 
+    print(response.body);
+
     List<dynamic> json = jsonDecode(response.body);
-    List<FeedApiResponse> feedList = json.map((item) => FeedApiResponse.fromJson(item)).toList();
+    List<GetCommentApiResponse> commentList = json.map((item) => GetCommentApiResponse.fromJson(item)).toList();
 
     try {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         state = state.update(loading: false);
 
-        return feedList;
+        return commentList;
       } else {
         state = state.update(loading: false);
         throw ("No data found");

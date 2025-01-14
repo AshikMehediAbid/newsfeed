@@ -1,10 +1,11 @@
-import 'package:ezycourse_my_project/components/comments_section.dart';
+import 'package:ezycourse_my_project/components/comment_section/comment_screen.dart';
 import 'package:flutter/material.dart';
 
 class SinglePost extends StatefulWidget {
   final String text, name, profilePic;
   final String? pic;
   final String updatedAt;
+  final feedId;
   SinglePost({
     super.key,
     required this.text,
@@ -12,6 +13,7 @@ class SinglePost extends StatefulWidget {
     required this.profilePic,
     this.pic,
     required this.updatedAt,
+    this.feedId,
   });
 
   @override
@@ -37,69 +39,65 @@ class _SinglePostState extends State<SinglePost> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 20.0,
-        left: 20,
-        right: 20,
-      ),
-      child: Column(
-        children: [
-          ListTile(
-            leading: ClipOval(
-              child: Image.network(
-                widget.profilePic,
-                fit: BoxFit.fill,
-                width: 50,
-                height: 50,
-              ),
+    return Column(
+      children: [
+        ListTile(
+          leading: ClipOval(
+            child: Image.network(
+              widget.profilePic,
+              fit: BoxFit.fill,
+              width: 50,
+              height: 50,
             ),
-            title: Text(
-              widget.name,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            subtitle: Text(
-              timeAgo(widget.updatedAt),
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF667085),
-              ),
-            ),
-            trailing: Icon(Icons.more_vert),
           ),
-          Divider(
-            thickness: .1,
+          title: Text(
+            widget.name,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-
-          /// Post
-          Text(
-            widget.text,
+          subtitle: Text(
+            timeAgo(widget.updatedAt),
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w400,
+              color: Color(0xFF667085),
             ),
           ),
+          trailing: Icon(Icons.more_vert),
+        ),
+        Divider(
+          thickness: .1,
+        ),
 
-          /// if image
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 20,
-              bottom: 10,
-            ),
-            child: Container(
-              width: double.infinity,
-              child: Image.network(
-                widget.pic ?? "",
-                fit: BoxFit.fitWidth,
-              ),
+        /// Post
+        Text(
+          widget.text,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+
+        /// if image
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 20,
+            bottom: 10,
+          ),
+          child: Container(
+            width: double.infinity,
+            child: Image.network(
+              widget.pic ?? "",
+              fit: BoxFit.fitWidth,
             ),
           ),
+        ),
 
-          Row(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
@@ -113,21 +111,19 @@ class _SinglePostState extends State<SinglePost> {
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  Icon(Icons.mode_comment_outlined),
-                  Text(
-                    "12 Comments",
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
+              Text(
+                "12 Comments",
+                style: TextStyle(
+                  fontSize: 14,
+                ),
               )
             ],
           ),
+        ),
 
-          Row(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
@@ -147,39 +143,45 @@ class _SinglePostState extends State<SinglePost> {
                 ],
               ),
               TextButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (context) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                onPressed: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * .75,
+                            child: CommentScreen(
+                              //title: Text("aaa"),
+                              feedID: widget.feedId,
                             ),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * .75,
-                              child: CommentsSection(
-                                title: Text("aaa"),
-                              ),
-                            ),
-                          );
-                        });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.mode_comment),
-                      Text(
-                        "Comment",
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
+                          ),
+                        );
+                      });
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.mode_comment),
+                    Text(
+                      "Comment",
+                      style: TextStyle(
+                        fontSize: 14,
                       ),
-                    ],
-                  ))
+                    ),
+                  ],
+                ),
+              ),
             ],
-          )
-        ],
-      ),
+          ),
+        ),
+
+        Divider(
+          thickness: 5,
+        ),
+      ],
     );
   }
 }

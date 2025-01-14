@@ -9,9 +9,9 @@ class Api {
 
   static const String CREATE_OR_UPDATE_REACTION = "teacher/community/createLike?=&=&=&=";
 
-  static const String REACTION_LIST = "teacher/community/getAllReactionType?feed_id=180370";
+  static const String REACTION_LIST = "teacher/community/getAllReactionType?feed_id=";
 
-  static const String FETCH_COMMENTS = "student/comment/getComment/:feedI_id?more=null";
+  static const String FETCH_COMMENTS = "student/comment/getComment/"; //:feedI_id?more=null";
 
   static const String CREATE_COMMENT = "student/comment/createComment";
 
