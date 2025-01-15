@@ -1,19 +1,18 @@
-import 'package:ezycourse_my_project/components/reply_section/view/reply_screen.dart';
-import 'package:ezycourse_my_project/core/api_response/comment_api_response/get_comment_api_response.dart';
+import 'package:ezycourse_my_project/core/api_response/reply_api_response/get_reply_api_response.dart';
 import 'package:flutter/material.dart';
 
-class SingleComment extends StatefulWidget {
-  final GetCommentApiResponse commentModel;
-  SingleComment({
+class SingleReply extends StatefulWidget {
+  final GetReplyApiResponse replyModel;
+  SingleReply({
     super.key,
-    required this.commentModel,
+    required this.replyModel,
   });
 
   @override
-  State<SingleComment> createState() => _SingleCommentState();
+  State<SingleReply> createState() => _SingleReplyState();
 }
 
-class _SingleCommentState extends State<SingleComment> {
+class _SingleReplyState extends State<SingleReply> {
   String timeAgo(String updatedAt) {
     DateTime updatedDateTime = DateTime.parse(updatedAt);
     DateTime currentTime = DateTime.now().toUtc();
@@ -34,7 +33,7 @@ class _SingleCommentState extends State<SingleComment> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 15,
+        horizontal: 10,
         vertical: 5,
       ),
       child: Column(
@@ -43,10 +42,10 @@ class _SingleCommentState extends State<SingleComment> {
             children: [
               ClipOval(
                 child: Image.network(
-                  widget.commentModel.user.profilePic,
+                  widget.replyModel.user.profilePic,
                   fit: BoxFit.fill,
-                  height: 55,
-                  width: 55,
+                  height: 45,
+                  width: 45,
                 ),
               ),
               SizedBox(width: 10),
@@ -60,14 +59,14 @@ class _SingleCommentState extends State<SingleComment> {
                       ),
                       child: ListTile(
                         title: Text(
-                          widget.commentModel.user.fullName,
+                          widget.replyModel.user.fullName,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         subtitle: Text(
-                          widget.commentModel.commentText,
+                          widget.replyModel.commentText,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -83,7 +82,10 @@ class _SingleCommentState extends State<SingleComment> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 80, right: 20),
+            padding: const EdgeInsets.only(
+              right: 20,
+              left: 75,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -92,7 +94,7 @@ class _SingleCommentState extends State<SingleComment> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        timeAgo(widget.commentModel.updatedAt),
+                        timeAgo(widget.replyModel.updatedAt),
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -100,7 +102,7 @@ class _SingleCommentState extends State<SingleComment> {
                         ),
                       ),
                       Text("Like"),
-                      TextButton(
+                      /*TextButton(
                         onPressed: () {
                           showModalBottomSheet(
                               isScrollControlled: true,
@@ -114,23 +116,23 @@ class _SingleCommentState extends State<SingleComment> {
                                     height: MediaQuery.of(context).size.height * .80,
                                     width: MediaQuery.of(context).size.width,
                                     child: ReplyScreen(
-                                      parentCommentID: widget.commentModel.id,
-                                      parentCommentTExt: widget.commentModel.commentText,
-                                      feedUserID: widget.commentModel.userId,
-                                      feedID: widget.commentModel.feedId,
-                                      parentCommentUserName: widget.commentModel.user.fullName,
-                                      parentCommentUserPic: widget.commentModel.user.profilePic,
+                                      parentCommentID: widget.replyModel.id,
+                                      parentCommentTExt: widget.replyModel.commentText,
+                                      feedUserID: widget.replyModel.userId,
+                                      feedID: widget.replyModel.feedId,
+                                      parentCommentUserName: widget.replyModel.user.fullName,
+                                      parentCommentUserPic: widget.replyModel.user.profilePic,
                                     ),
                                   ),
                                 );
                               });
                         },
                         child: Text("Reply"),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),
-                SizedBox(width: 120),
+                SizedBox(width: 150),
                 Text("data"),
               ],
             ),

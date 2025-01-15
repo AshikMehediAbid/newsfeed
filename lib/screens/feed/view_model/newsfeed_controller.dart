@@ -1,31 +1,30 @@
 import 'dart:convert';
 
-import 'package:ezycourse_my_project/components/comment_section/comment_generic.dart';
-import 'package:ezycourse_my_project/core/api_response/comment_api_response/create_comment_response.dart';
-import 'package:ezycourse_my_project/core/api_response/comment_api_response/get_comment_api_response.dart';
+import 'package:ezycourse_my_project/core/api_response/feed_api_response/get_feed_api_model.dart';
 import 'package:ezycourse_my_project/core/network/api.dart';
+import 'package:ezycourse_my_project/screens/feed/view_model/newsfeed_generic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final commentProvider = StateNotifierProvider<CommentController, CommentGeneric>(
-  (ref) => CommentController(),
+final newsfeedProvider = StateNotifierProvider<NewsfeedController, NewsfeedGeneric>(
+  (ref) => NewsfeedController(),
 );
 
-class CommentController extends StateNotifier<CommentGeneric> {
-  CommentController() : super(CommentGeneric());
+class NewsfeedController extends StateNotifier<NewsfeedGeneric> {
+  NewsfeedController() : super(NewsfeedGeneric());
 
-  Future<CommentApiResponse> createComment({
-    required int feed_id,
-    required String comment_txt,
-  }) async {
+  Future<String> createPost({required feed_txt, required int is_background}) async {
     final prefs = await SharedPreferences.getInstance();
     final _tokan = (prefs.getString('passwordToken') ?? 0);
 
     Map<String, dynamic> payload = {
-      "feed_id": feed_id,
-      "comment_txt": comment_txt,
-      "commentSource": "COMMUNITY",
+      "feed_txt": feed_txt,
+      "community_id": 2914,
+      "space_id": 5883,
+      "is_background": 0,
+      "activity_type": "group",
+      "uploadType": "text"
     };
 
     Map<String, String> headers = {
@@ -35,23 +34,20 @@ class CommentController extends StateNotifier<CommentGeneric> {
     };
 
     Response response = await post(
-      Uri.parse(Api.BASE_URL + Api.CREATE_COMMENT),
+      Uri.parse(Api.BASE_URL + Api.CREATE_POST),
       headers: headers,
       body: jsonEncode(payload),
     );
 
-    CommentApiResponse commentApiResponse = CommentApiResponse.fromJson(jsonDecode(response.body));
-
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      print(response.body);
-      return commentApiResponse;
+      getFeed();
+      return "";
     } else {
       throw "error";
     }
   }
 
-  Future<List<GetCommentApiResponse>> getComments(int feedl_id) async {
+  Future<List<FeedApiResponse>> getFeed() async {
     final prefs = await SharedPreferences.getInstance();
     final _tokan = (prefs.getString('passwordToken') ?? 0);
 
@@ -63,21 +59,25 @@ class CommentController extends StateNotifier<CommentGeneric> {
       'Authorization': 'Bearer $_tokan'
     };
 
-    Response response = await get(
-      Uri.parse(Api.BASE_URL + Api.FETCH_COMMENTS + feedl_id.toString() + "?more=null"),
+    Map<String, dynamic> payload = {
+      "community_id": 2914,
+      "space_id": 5883,
+    };
+
+    Response response = await post(
+      Uri.parse(Api.BASE_URL + Api.FETCH_COMMUNITY),
+      body: jsonEncode(payload),
       headers: headers,
     );
 
-    print(response.body);
-
     List<dynamic> json = jsonDecode(response.body);
-    List<GetCommentApiResponse> commentList = json.map((item) => GetCommentApiResponse.fromJson(item)).toList();
+    List<FeedApiResponse> feedList = json.map((item) => FeedApiResponse.fromJson(item)).toList();
 
     try {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         state = state.update(loading: false);
 
-        return commentList;
+        return feedList;
       } else {
         state = state.update(loading: false);
         throw ("No data found");

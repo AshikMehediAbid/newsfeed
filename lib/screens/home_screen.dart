@@ -1,5 +1,5 @@
-import 'package:ezycourse_my_project/screens/feed/newsfeed.dart';
-import 'package:ezycourse_my_project/screens/signin/sign_in_screen.dart';
+import 'package:ezycourse_my_project/screens/feed/view/newsfeed.dart';
+import 'package:ezycourse_my_project/screens/signin/view/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -1,4 +1,5 @@
-import 'package:ezycourse_my_project/components/comment_section/comment_screen.dart';
+import 'package:ezycourse_my_project/components/comment_section/view/comment_screen.dart';
+import 'package:ezycourse_my_project/core/api_response/feed_api_response/get_feed_api_model.dart';
 import 'package:flutter/material.dart';
 
 class SinglePost extends StatefulWidget {
@@ -6,6 +7,7 @@ class SinglePost extends StatefulWidget {
   final String? pic;
   final String updatedAt;
   final feedId;
+  final FeedApiResponse feedModel;
   SinglePost({
     super.key,
     required this.text,
@@ -13,6 +15,7 @@ class SinglePost extends StatefulWidget {
     required this.profilePic,
     this.pic,
     required this.updatedAt,
+    required this.feedModel,
     this.feedId,
   });
 
@@ -40,6 +43,7 @@ class _SinglePostState extends State<SinglePost> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
           leading: ClipOval(
@@ -72,11 +76,14 @@ class _SinglePostState extends State<SinglePost> {
         ),
 
         /// Post
-        Text(
-          widget.text,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          child: Text(
+            widget.text,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ),
 
@@ -107,14 +114,36 @@ class _SinglePostState extends State<SinglePost> {
                   ),
                   SizedBox(width: 10),
                   Text(
-                    "You and 2 other",
+                    "You and ${widget.feedModel.likeCount} other",
                   ),
                 ],
               ),
-              Text(
-                "12 Comments",
-                style: TextStyle(
-                  fontSize: 14,
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * .80,
+                            child: CommentScreen(
+                              reactCount: widget.feedModel.likeCount,
+                              //title: Text("aaa"),
+                              feedID: widget.feedId,
+                            ),
+                          ),
+                        );
+                      });
+                },
+                child: Text(
+                  "${widget.feedModel.commentCount} Comments",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
                 ),
               )
             ],
@@ -153,8 +182,9 @@ class _SinglePostState extends State<SinglePost> {
                             bottom: MediaQuery.of(context).viewInsets.bottom,
                           ),
                           child: SizedBox(
-                            height: MediaQuery.of(context).size.height * .75,
+                            height: MediaQuery.of(context).size.height * .80,
                             child: CommentScreen(
+                              reactCount: widget.feedModel.likeCount,
                               //title: Text("aaa"),
                               feedID: widget.feedId,
                             ),

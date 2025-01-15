@@ -1,6 +1,6 @@
 import 'package:ezycourse_my_project/components/custom_text_field.dart';
 import 'package:ezycourse_my_project/screens/home_screen.dart';
-import 'package:ezycourse_my_project/screens/signin/sign_in_controller.dart';
+import 'package:ezycourse_my_project/screens/signin/view_model/sign_in_controller.dart';
 import 'package:ezycourse_my_project/utils/toast/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

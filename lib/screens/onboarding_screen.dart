@@ -1,7 +1,7 @@
 import 'package:ezycourse_my_project/components/onboard_component.dart';
 import 'package:ezycourse_my_project/models/onboard_model.dart';
 import 'package:ezycourse_my_project/screens/home_screen.dart';
-import 'package:ezycourse_my_project/screens/signin/sign_in_screen.dart';
+import 'package:ezycourse_my_project/screens/signin/view/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

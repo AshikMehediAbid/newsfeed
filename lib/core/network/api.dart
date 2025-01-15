@@ -19,5 +19,5 @@ class Api {
 
   static const String LOG_OUT = "student/auth/logout";
 
-  static const String FETCH_REPLY = "student/comment/getReply/61231?more=null";
+  static const String FETCH_REPLY = "student/comment/getReply/";
 }

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:ezycourse_my_project/core/api_response/sign_in_api_model.dart';
 import 'package:ezycourse_my_project/core/network/api.dart';
-import 'package:ezycourse_my_project/screens/signin/sign_in_generic.dart';
+import 'package:ezycourse_my_project/screens/signin/view_model/sign_in_generic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';

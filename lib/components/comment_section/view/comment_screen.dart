@@ -1,4 +1,4 @@
-import 'package:ezycourse_my_project/components/comment_section/comment_controller.dart';
+import 'package:ezycourse_my_project/components/comment_section/view_model/comment_controller.dart';
 import 'package:ezycourse_my_project/components/single_comment.dart';
 import 'package:ezycourse_my_project/core/api_response/comment_api_response/create_comment_response.dart';
 import 'package:ezycourse_my_project/core/api_response/comment_api_response/get_comment_api_response.dart';
@@ -6,19 +6,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReplyScreen extends ConsumerStatefulWidget {
+class CommentScreen extends ConsumerStatefulWidget {
   int feedID;
-  ReplyScreen({required this.feedID, super.key});
+  int reactCount;
+  CommentScreen({required this.feedID, super.key, required this.reactCount});
 
   @override
-  ConsumerState<ReplyScreen> createState() => _ReplyScreenState();
+  ConsumerState<CommentScreen> createState() => _CommentScreenState();
 }
 
-class _ReplyScreenState extends ConsumerState<ReplyScreen> {
+class _CommentScreenState extends ConsumerState<CommentScreen> {
   TextEditingController _commentController = TextEditingController();
   List<GetCommentApiResponse> getCommentList = [];
 
-/*
   @override
   void initState() {
     // TODO: implement initState
@@ -30,7 +30,6 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     getCommentList = await ref.read(commentProvider.notifier).getComments(widget.feedID);
     setState(() {});
   }
-*/
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +60,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                       ),
                       SizedBox(width: 5),
                       Text(
-                        "You and 2 other",
+                        "You and ${widget.reactCount} other",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -146,9 +145,9 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                         onPressed: () async {
                           CommentApiResponse response = await ref.read(commentProvider.notifier).createComment(
                                 feed_id: widget.feedID,
-                                comment_txt: _commentController.text.toString(),
+                                comment_txt: _commentController.text.trim(),
                               );
-
+                          get_Comment();
                           _commentController.clear();
                         },
                       ),

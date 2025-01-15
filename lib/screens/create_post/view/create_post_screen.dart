@@ -1,5 +1,6 @@
 import 'package:ezycourse_my_project/models/color_model.dart';
-import 'package:ezycourse_my_project/screens/feed/newsfeed_controller.dart';
+import 'package:ezycourse_my_project/screens/create_post/view_model/create_post_controller.dart';
+import 'package:ezycourse_my_project/screens/feed/view_model/newsfeed_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,14 +12,11 @@ class CreatePostScreen extends ConsumerStatefulWidget {
 }
 
 class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
-  bool isTapped = false;
-  Icon checkBoxIcon = Icon(Icons.arrow_forward_ios);
-  Color backgroundColor = Colors.white;
-  int isBackground = 0;
   TextEditingController _text = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final createPostController = ref.watch(createPostProvider);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(25),
@@ -53,9 +51,8 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                   onPressed: () async {
                     print("Clicked");
                     if (_text.text.toString().trim().isNotEmpty) {
-                      String x = await ref
-                          .read(newsfeedProvider.notifier)
-                          .createPost(feed_txt: _text.text.toString().trim(), is_background: isBackground);
+                      String x = await ref.read(newsfeedProvider.notifier).createPost(
+                          feed_txt: _text.text.toString().trim(), is_background: createPostController.isBackground);
                       _text.clear();
                       Navigator.of(context).pop();
                     }
@@ -83,7 +80,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                     fontWeight: FontWeight.w400,
                     fontSize: 16,
                   ),
-                  fillColor: backgroundColor,
+                  fillColor: createPostController.backgroundColor,
                   filled: true,
                   border: InputBorder.none,
                 ),
@@ -94,9 +91,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    setState(() {
-                      isTapped = !isTapped;
-                    });
+                    ref.read(createPostProvider.notifier).toggleShowBgColor();
                   },
                   child: Card(
                     color: Colors.white,
@@ -105,24 +100,20 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                       width: 30,
                       decoration: BoxDecoration(),
                       child: Icon(
-                        (isTapped == false) ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+                        (createPostController.showBgColor == false) ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                         size: 18,
                       ),
                     ),
                   ),
                 ),
-                (isTapped == true)
+                (createPostController.showBgColor == true)
                     ? Row(
                         children: List.generate(
                           colorList.length,
                           (index) {
                             return GestureDetector(
                               onTap: () {
-                                setState(() {
-                                  backgroundColor = colorList[index].boxColor;
-
-                                  (backgroundColor != Colors.white) ? 1 : 0;
-                                });
+                                ref.read(createPostProvider.notifier).changeBgColor(index);
                               },
                               child: Card(
                                 color: colorList[index].boxColor,
