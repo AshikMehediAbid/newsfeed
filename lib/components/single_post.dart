@@ -1,8 +1,11 @@
 import 'package:ezycourse_my_project/components/comment_section/view/comment_screen.dart';
-import 'package:ezycourse_my_project/core/api_response/feed_api_response/get_feed_api_model.dart';
+import 'package:ezycourse_my_project/components/react/model/reaction_model.dart';
+import 'package:ezycourse_my_project/components/react/view_model/react_controller.dart';
+import 'package:ezycourse_my_project/screens/feed/model/get_feed_api_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SinglePost extends StatefulWidget {
+class SinglePost extends ConsumerStatefulWidget {
   final String text, name, profilePic;
   final String? pic;
   final String updatedAt;
@@ -20,10 +23,10 @@ class SinglePost extends StatefulWidget {
   });
 
   @override
-  State<SinglePost> createState() => _SinglePostState();
+  ConsumerState<SinglePost> createState() => _SinglePostState();
 }
 
-class _SinglePostState extends State<SinglePost> {
+class _SinglePostState extends ConsumerState<SinglePost> {
   String timeAgo(String updatedAt) {
     DateTime updatedDateTime = DateTime.parse(updatedAt);
     DateTime currentTime = DateTime.now().toUtc();
@@ -38,6 +41,89 @@ class _SinglePostState extends State<SinglePost> {
     } else {
       return "Just now";
     }
+  }
+
+  Row? reaction;
+  bool isReact = false;
+  String? REACTION;
+
+  OverlayEntry? _overlayEntry;
+
+  void showReactionDialog(BuildContext context, Offset position) {
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          // Dismiss dialog when tapping outside
+          GestureDetector(
+            onTap: hideReactionDialog,
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+          Positioned(
+            left: position.dx, // Adjust horizontally
+            top: position.dy - 130, // Adjust vertically
+            child: Material(
+              elevation: 4.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              color: Colors.white,
+              child: GestureDetector(
+                // Dismiss dialog when tapping an option
+                onTap: hideReactionDialog,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      reactList.length,
+                      (index) {
+                        return GestureDetector(
+                          onTap: () async {
+                            setState(() {
+                              isReact = true;
+                              REACTION = reactList[index].REACT;
+                              reaction = Row(
+                                children: [
+                                  Image.asset(
+                                    reactList[index].iconURL,
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  Text("  ${reactList[index].react}",
+                                      style: TextStyle(color: reactList[index].rectColor)),
+                                ],
+                              );
+                            });
+                            hideReactionDialog();
+                            await ref
+                                .read(reactProvider.notifier)
+                                .addReact(feed_id: widget.feedId, reactionType: REACTION!);
+                          },
+                          child: Row(
+                            children: [
+                              Image.asset(reactList[index].iconURL),
+                              SizedBox(width: 10),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void hideReactionDialog() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
   }
 
   @override
@@ -155,21 +241,52 @@ class _SinglePostState extends State<SinglePost> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.thumb_up_sharp,
-                    color: Colors.blue,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    "Like",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 14,
+              GestureDetector(
+                onLongPressStart: (details) async {
+                  // Show the dialog on long press
+                  showReactionDialog(context, details.globalPosition);
+
+                  print("Clicked");
+                },
+                onTap: () async {
+                  print(isReact);
+                  setState(() {
+                    reaction = (isReact == true)
+                        ? Row(
+                            children: [
+                              Icon(
+                                Icons.thumb_up_alt_outlined,
+                                size: 20,
+                              ),
+                              Text("  Like", style: TextStyle(color: Colors.grey)),
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/reaction/like.png',
+                                height: 20,
+                                width: 20,
+                              ),
+                              Text("  Like", style: TextStyle(color: Colors.blue)),
+                            ],
+                          );
+
+                    isReact = !isReact;
+                  });
+
+                  //await ref.read(reactProvider.notifier).addReact(feed_id: widget.feedId, reactionType: "ANGRY");
+                },
+                child: reaction ??
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.thumb_up_alt_outlined,
+                          size: 20,
+                        ),
+                        Text("  Like", style: TextStyle(color: Colors.grey)),
+                      ],
                     ),
-                  )
-                ],
               ),
               TextButton(
                 onPressed: () {

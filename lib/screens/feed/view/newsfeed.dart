@@ -1,5 +1,4 @@
 import 'package:ezycourse_my_project/components/single_post.dart';
-import 'package:ezycourse_my_project/core/api_response/feed_api_response/get_feed_api_model.dart';
 import 'package:ezycourse_my_project/screens/create_post/view/create_post_screen.dart';
 import 'package:ezycourse_my_project/screens/feed/view_model/newsfeed_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,28 +13,22 @@ class Newsfeed extends ConsumerStatefulWidget {
 }
 
 class _NewsfeedState extends ConsumerState<Newsfeed> {
-  List<FeedApiResponse> feedModelList = [];
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    get_Feed();
-  }
 
-  void get_Feed() async {
-    feedModelList = await ref.read(newsfeedProvider.notifier).getFeed();
-    setState(() {});
+    ref.read(newsfeedProvider.notifier).get_Feed();
   }
 
   Future<void> _pullRefresh() async {
-    get_Feed();
-    // setState(() {});
+    ref.read(newsfeedProvider.notifier).get_Feed();
+    await Future.delayed(Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
-    final load = ref.watch(newsfeedProvider);
+    final newsfeedController = ref.watch(newsfeedProvider);
     return Scaffold(
       appBar: AppBar(
         leading: Icon(
@@ -64,6 +57,8 @@ class _NewsfeedState extends ConsumerState<Newsfeed> {
         ),
       ),
       body: RefreshIndicator(
+        color: Colors.white,
+        backgroundColor: Colors.teal,
         onRefresh: _pullRefresh,
         child: SingleChildScrollView(
           child: Column(
@@ -102,7 +97,6 @@ class _NewsfeedState extends ConsumerState<Newsfeed> {
                                 builder: (context) => CreatePostScreen(),
                               ),
                             );
-                            get_Feed();
                           },
                         ),
                       ),
@@ -126,19 +120,24 @@ class _NewsfeedState extends ConsumerState<Newsfeed> {
                   ),
                 ),
               ),
-
-              ...List.generate(
-                feedModelList.length,
-                (index) => SinglePost(
-                  name: feedModelList[index].name,
-                  profilePic: feedModelList[index].user.profilePic,
-                  text: feedModelList[index].feedText,
-                  pic: feedModelList[index].pic,
-                  updatedAt: feedModelList[index].updatedAt,
-                  feedId: feedModelList[index].id,
-                  feedModel: feedModelList[index],
+              if (newsfeedController.feedModelList.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(child: Text("No posts available. Pull to refresh.")),
+                )
+              else
+                ...List.generate(
+                  newsfeedController.feedModelList.length,
+                  (index) => SinglePost(
+                    name: newsfeedController.feedModelList[index].name,
+                    profilePic: newsfeedController.feedModelList[index].user.profilePic,
+                    text: newsfeedController.feedModelList[index].feedText,
+                    pic: newsfeedController.feedModelList[index].pic,
+                    updatedAt: newsfeedController.feedModelList[index].updatedAt,
+                    feedId: newsfeedController.feedModelList[index].id,
+                    feedModel: newsfeedController.feedModelList[index],
+                  ),
                 ),
-              ),
 
               /*            Card(
                 color: Colors.teal,
@@ -165,10 +164,6 @@ class _NewsfeedState extends ConsumerState<Newsfeed> {
                   ),
                 ),
               )*/
-
-              // CommentsSection(
-              //   title: Text("abc"),
-              // )
             ],
           ),
         ),

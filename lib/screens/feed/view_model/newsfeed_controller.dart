@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:ezycourse_my_project/core/api_response/feed_api_response/get_feed_api_model.dart';
 import 'package:ezycourse_my_project/core/network/api.dart';
+import 'package:ezycourse_my_project/screens/feed/model/get_feed_api_model.dart';
 import 'package:ezycourse_my_project/screens/feed/view_model/newsfeed_generic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -13,6 +13,10 @@ final newsfeedProvider = StateNotifierProvider<NewsfeedController, NewsfeedGener
 
 class NewsfeedController extends StateNotifier<NewsfeedGeneric> {
   NewsfeedController() : super(NewsfeedGeneric());
+
+  void get_Feed() async {
+    state = state.update(feedModelList: await getFeed());
+  }
 
   Future<String> createPost({required feed_txt, required int is_background}) async {
     final prefs = await SharedPreferences.getInstance();
@@ -64,28 +68,28 @@ class NewsfeedController extends StateNotifier<NewsfeedGeneric> {
       "space_id": 5883,
     };
 
-    Response response = await post(
-      Uri.parse(Api.BASE_URL + Api.FETCH_COMMUNITY),
-      body: jsonEncode(payload),
-      headers: headers,
-    );
-
-    List<dynamic> json = jsonDecode(response.body);
-    List<FeedApiResponse> feedList = json.map((item) => FeedApiResponse.fromJson(item)).toList();
-
     try {
+      Response response = await post(
+        Uri.parse(Api.BASE_URL + Api.FETCH_COMMUNITY),
+        body: jsonEncode(payload),
+        headers: headers,
+      );
+
+      List<dynamic> json = jsonDecode(response.body);
+      List<FeedApiResponse> feedList = json.map((item) => FeedApiResponse.fromJson(item)).toList();
+
       if (response.statusCode >= 200 && response.statusCode < 300) {
         state = state.update(loading: false);
 
         return feedList;
       } else {
         state = state.update(loading: false);
-        throw ("No data found");
+        throw Exception("Failed to fetch feed");
       }
     } catch (e) {
       state = state.update(loading: false);
       print("#############################################################$e");
-      throw e;
+      return []; // Return an empty list instead of null
     }
   }
 }
