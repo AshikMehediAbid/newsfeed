@@ -21,3 +21,33 @@ final List<ReactionModel> reactList = [
   ReactionModel(
       react: "Angry", REACT: "ANGRY", iconURL: "assets/images/reaction/angry.png", rectColor: Colors.deepOrange),
 ];
+
+class GetReactionModel {
+  final int totalLikes;
+  final String reactionType;
+  final Map<String, dynamic> meta;
+
+  GetReactionModel({
+    required this.totalLikes,
+    required this.reactionType,
+    required this.meta,
+  });
+
+  // Factory constructor for creating an instance from JSON
+  factory GetReactionModel.fromJson(Map<String, dynamic> json) {
+    return GetReactionModel(
+      totalLikes: json['total_likes'],
+      reactionType: json['reaction_type'],
+      meta: json['meta'] ?? {},
+    );
+  }
+
+  // Method to convert the instance to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'total_likes': totalLikes,
+      'reaction_type': reactionType,
+      'meta': meta,
+    };
+  }
+}

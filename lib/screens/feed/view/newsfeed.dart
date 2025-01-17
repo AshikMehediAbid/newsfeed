@@ -1,4 +1,4 @@
-import 'package:ezycourse_my_project/components/single_post.dart';
+import 'package:ezycourse_my_project/components/single_post/view/single_post.dart';
 import 'package:ezycourse_my_project/screens/create_post/view/create_post_screen.dart';
 import 'package:ezycourse_my_project/screens/feed/view_model/newsfeed_controller.dart';
 import 'package:flutter/cupertino.dart';

@@ -37,17 +37,22 @@ class NewsfeedController extends StateNotifier<NewsfeedGeneric> {
       'Authorization': 'Bearer $_tokan'
     };
 
-    Response response = await post(
-      Uri.parse(Api.BASE_URL + Api.CREATE_POST),
-      headers: headers,
-      body: jsonEncode(payload),
-    );
+    try {
+      Response response = await post(
+        Uri.parse(Api.BASE_URL + Api.CREATE_POST),
+        headers: headers,
+        body: jsonEncode(payload),
+      );
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      getFeed();
-      return "";
-    } else {
-      throw "error";
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        getFeed();
+        return "";
+      } else {
+        throw "error";
+      }
+    } catch (e) {
+      print("Error");
+      throw Exception(e);
     }
   }
 

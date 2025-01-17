@@ -1,6 +1,7 @@
 import 'package:ezycourse_my_project/components/comment_section/view/comment_screen.dart';
 import 'package:ezycourse_my_project/components/react/model/reaction_model.dart';
 import 'package:ezycourse_my_project/components/react/view_model/react_controller.dart';
+import 'package:ezycourse_my_project/components/single_post/view_model/single_post_controller.dart';
 import 'package:ezycourse_my_project/screens/feed/model/get_feed_api_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,13 +44,12 @@ class _SinglePostState extends ConsumerState<SinglePost> {
     }
   }
 
-  Row? reaction;
-  bool isReact = false;
-  String? REACTION;
-
   OverlayEntry? _overlayEntry;
 
-  void showReactionDialog(BuildContext context, Offset position) {
+  void showReactionDialog(
+    BuildContext context,
+    Offset position,
+  ) {
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [
@@ -81,25 +81,11 @@ class _SinglePostState extends ConsumerState<SinglePost> {
                       (index) {
                         return GestureDetector(
                           onTap: () async {
-                            setState(() {
-                              isReact = true;
-                              REACTION = reactList[index].REACT;
-                              reaction = Row(
-                                children: [
-                                  Image.asset(
-                                    reactList[index].iconURL,
-                                    height: 20,
-                                    width: 20,
-                                  ),
-                                  Text("  ${reactList[index].react}",
-                                      style: TextStyle(color: reactList[index].rectColor)),
-                                ],
-                              );
-                            });
+                            ref.read(singlePostProvider.notifier).addReact(index);
                             hideReactionDialog();
-                            await ref
-                                .read(reactProvider.notifier)
-                                .addReact(feed_id: widget.feedId, reactionType: REACTION!);
+
+                            await ref.read(reactProvider.notifier).createReact(
+                                feed_id: widget.feedId, reactionType: ref.watch(singlePostProvider).REACTION!);
                           },
                           child: Row(
                             children: [
@@ -128,6 +114,8 @@ class _SinglePostState extends ConsumerState<SinglePost> {
 
   @override
   Widget build(BuildContext context) {
+    final singlePostController = ref.watch(singlePostProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -200,7 +188,7 @@ class _SinglePostState extends ConsumerState<SinglePost> {
                   ),
                   SizedBox(width: 10),
                   Text(
-                    "You and ${widget.feedModel.likeCount} other",
+                    " ${widget.feedModel.likeCount} Like",
                   ),
                 ],
               ),
@@ -237,93 +225,66 @@ class _SinglePostState extends ConsumerState<SinglePost> {
         ),
 
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                onLongPressStart: (details) async {
-                  // Show the dialog on long press
-                  showReactionDialog(context, details.globalPosition);
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onLongPressStart: (details) {
+                    // Show the dialog on long press
+                    showReactionDialog(context, details.globalPosition);
 
-                  print("Clicked");
-                },
-                onTap: () async {
-                  print(isReact);
-                  setState(() {
-                    reaction = (isReact == true)
-                        ? Row(
-                            children: [
-                              Icon(
-                                Icons.thumb_up_alt_outlined,
-                                size: 20,
-                              ),
-                              Text("  Like", style: TextStyle(color: Colors.grey)),
-                            ],
-                          )
-                        : Row(
-                            children: [
-                              Image.asset(
-                                'assets/images/reaction/like.png',
-                                height: 20,
-                                width: 20,
-                              ),
-                              Text("  Like", style: TextStyle(color: Colors.blue)),
-                            ],
-                          );
+                    print("Long press");
+                  },
+                  onTap: () async {
+                    print("1. isReact: ${singlePostController.isReact}   REACTION: ${singlePostController.REACTION}");
 
-                    isReact = !isReact;
-                  });
+                    ref.read(singlePostProvider.notifier).toggleReact();
 
-                  //await ref.read(reactProvider.notifier).addReact(feed_id: widget.feedId, reactionType: "ANGRY");
-                },
-                child: reaction ??
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.thumb_up_alt_outlined,
-                          size: 20,
-                        ),
-                        Text("  Like", style: TextStyle(color: Colors.grey)),
-                      ],
-                    ),
-              ),
-              TextButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom,
-                          ),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height * .80,
-                            child: CommentScreen(
-                              reactCount: widget.feedModel.likeCount,
-                              //title: Text("aaa"),
-                              feedID: widget.feedId,
-                            ),
-                          ),
-                        );
-                      });
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.mode_comment),
-                    Text(
-                      "Comment",
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+                    print(
+                        "3. isReact: ${ref.read(singlePostProvider).isReact}   REACTION: ${ref.read(singlePostProvider).REACTION}");
+
+                    await ref
+                        .read(reactProvider.notifier)
+                        .createReact(feed_id: widget.feedId, reactionType: ref.read(singlePostProvider).REACTION ?? "");
+                  },
+                  child: Text("data ${singlePostController.REACTION}"),
                 ),
-              ),
-            ],
-          ),
-        ),
+                TextButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * .80,
+                              child: CommentScreen(
+                                reactCount: widget.feedModel.likeCount,
+                                //title: Text("aaa"),
+                                feedID: widget.feedId,
+                              ),
+                            ),
+                          );
+                        });
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.mode_comment),
+                      Text(
+                        "Comment",
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )),
 
         Divider(
           thickness: 5,
