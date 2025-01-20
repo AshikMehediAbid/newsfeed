@@ -54,7 +54,9 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                       String x = await ref.read(newsfeedProvider.notifier).createPost(
                           feed_txt: _text.text.toString().trim(), is_background: createPostController.isBackground);
                       _text.clear();
+                      ref.read(newsfeedProvider.notifier).get_Feed();
                       Navigator.of(context).pop();
+                      //ref.read(newsfeedProvider.notifier).get_Feed();
                     }
                   },
                   child: Text(

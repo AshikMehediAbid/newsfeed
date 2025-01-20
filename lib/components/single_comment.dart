@@ -125,7 +125,7 @@ class _SingleCommentState extends State<SingleComment> {
                                 );
                               });
                         },
-                        child: Text("Reply"),
+                        child: Text("Reply (${widget.commentModel.replyCount})"),
                       ),
                     ],
                   ),

@@ -3,6 +3,7 @@ import 'package:ezycourse_my_project/components/react/model/reaction_model.dart'
 import 'package:ezycourse_my_project/components/react/view_model/react_controller.dart';
 import 'package:ezycourse_my_project/components/single_post/view_model/single_post_controller.dart';
 import 'package:ezycourse_my_project/screens/feed/model/get_feed_api_model.dart';
+import 'package:ezycourse_my_project/screens/feed/view_model/newsfeed_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,6 +47,27 @@ class _SinglePostState extends ConsumerState<SinglePost> {
 
   OverlayEntry? _overlayEntry;
 
+  void setReact({required String REACTION}) async {
+    await ref.read(reactProvider.notifier).createReact(
+          feed_id: widget.feedId,
+          reactionType: REACTION,
+          action: "update",
+        );
+    ref.read(newsfeedProvider.notifier).get_Feed();
+    ref.read(singlePostProvider.notifier).addReact(REACTION);
+  }
+
+  void reSetReact() async {
+    await ref.read(reactProvider.notifier).createReact(
+          feed_id: widget.feedId,
+          reactionType: ref.read(singlePostProvider).REACTION ?? "",
+          action: "deleteOrCreate",
+        );
+
+    ref.read(newsfeedProvider.notifier).get_Feed();
+    ref.read(singlePostProvider.notifier).deleteReact();
+  }
+
   void showReactionDialog(
     BuildContext context,
     Offset position,
@@ -81,11 +103,13 @@ class _SinglePostState extends ConsumerState<SinglePost> {
                       (index) {
                         return GestureDetector(
                           onTap: () async {
-                            ref.read(singlePostProvider.notifier).addReact(index);
+                            ref.read(singlePostProvider.notifier).addReact(reactList[index].REACT);
                             hideReactionDialog();
 
-                            await ref.read(reactProvider.notifier).createReact(
-                                feed_id: widget.feedId, reactionType: ref.watch(singlePostProvider).REACTION!);
+                            setReact(REACTION: ref.read(singlePostProvider).REACTION!);
+
+                            ref.read(newsfeedProvider.notifier).get_Feed();
+                            // ref.read(singlePostProvider.notifier).resetReact();
                           },
                           child: Row(
                             children: [
@@ -225,32 +249,53 @@ class _SinglePostState extends ConsumerState<SinglePost> {
         ),
 
         Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onLongPressStart: (details) {
-                    // Show the dialog on long press
-                    showReactionDialog(context, details.globalPosition);
-
-                    print("Long press");
-                  },
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: GestureDetector(
                   onTap: () async {
-                    print("1. isReact: ${singlePostController.isReact}   REACTION: ${singlePostController.REACTION}");
+                    print("2 => ${singlePostController.isReact}");
+                    if (singlePostController.isReact == false) {
+                      print("You dont react yet");
 
-                    ref.read(singlePostProvider.notifier).toggleReact();
+                      setReact(REACTION: "LIKE");
+                      ref.read(newsfeedProvider.notifier).get_Feed();
 
-                    print(
-                        "3. isReact: ${ref.read(singlePostProvider).isReact}   REACTION: ${ref.read(singlePostProvider).REACTION}");
-
-                    await ref
-                        .read(reactProvider.notifier)
-                        .createReact(feed_id: widget.feedId, reactionType: ref.read(singlePostProvider).REACTION ?? "");
+/*                        await ref.read(reactProvider.notifier).createReact(
+                            feed_id: widget.feedId,
+                            reactionType: ref.read(singlePostProvider).REACTION ?? "",
+                            action: "update");*/
+                    } else {
+                      print(">>>>>>>>>>>>>>>>>>>>>  You have already react the post");
+                      reSetReact();
+                      ref.read(newsfeedProvider.notifier).get_Feed();
+                    }
                   },
-                  child: Text("data ${singlePostController.REACTION}"),
+                  onLongPressStart: (details) async {
+                    showReactionDialog(context, details.globalPosition);
+                    print("1 => ${singlePostController.isReact}");
+                  },
+                  child: (widget.feedModel.like != null)
+                      ? ref.read(reactProvider.notifier).getSinglePostReact(widget.feedModel.like!.reactionType!)
+                      : Row(
+                          children: [
+                            Icon(
+                              Icons.thumb_up_alt_outlined,
+                              size: 20,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              "  Like",
+                            ),
+                          ],
+                        ),
                 ),
-                TextButton(
+              ),
+              Expanded(child: Row()),
+              Expanded(
+                child: TextButton(
                   onPressed: () {
                     showModalBottomSheet(
                         isScrollControlled: true,
@@ -283,8 +328,10 @@ class _SinglePostState extends ConsumerState<SinglePost> {
                     ],
                   ),
                 ),
-              ],
-            )),
+              ),
+            ],
+          ),
+        ),
 
         Divider(
           thickness: 5,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ezycourse_my_project/components/react/model/reaction_model.dart';
 import 'package:ezycourse_my_project/components/react/view_model/react_generic.dart';
 import 'package:ezycourse_my_project/core/network/api.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,26 +15,40 @@ final reactProvider = StateNotifierProvider<ReactController, ReactGeneric>(
 class ReactController extends StateNotifier<ReactGeneric> {
   ReactController() : super(ReactGeneric());
 
-  ReactionModel? getSinglePostReact(String reactType) {
-    if (reactType == "LIKE") return reactList[0];
-    if (reactType == "LOVE") return reactList[1];
-    if (reactType == "CARE") return reactList[2];
-    if (reactType == "HAHA") return reactList[3];
-    if (reactType == "WOW") return reactList[4];
-    if (reactType == "SAD") return reactList[5];
-    if (reactType == "ANGRY") return reactList[6];
+  Row getSinglePostReact(String reactType) {
+    return Row(
+      children: [
+        Flexible(
+          child: Image.asset(
+            fit: BoxFit.fill,
+            "assets/images/reaction/${reactType.toLowerCase()}.png",
+            height: 20,
+            width: 20,
+          ),
+        ),
+        SizedBox(width: 5),
+        Text(
+          "$reactType",
+          style: (reactType == "LIKE")
+              ? TextStyle(color: Colors.blue)
+              : (reactType == 'ANGRY')
+                  ? TextStyle(color: Colors.deepOrange)
+                  : TextStyle(color: Colors.yellow.shade800),
+        ),
+      ],
+    );
   }
 
-  Future<void> createReact({required int feed_id, required String reactionType}) async {
+  Future<void> createReact({required int feed_id, String? reactionType, required String action}) async {
     final pref = await SharedPreferences.getInstance();
     final _token = pref.getString('passwordToken') ?? 0;
 
-    print("Create react: $reactionType *");
+    print("#Action: $action");
 
     Map<String, dynamic> payload = {
       'feed_id': feed_id,
       'reaction_type': (reactionType != "") ? reactionType : null,
-      'action': "CreateOrDelete",
+      'action': action,
       "reactionSource": "COMMUNITY",
     };
 
