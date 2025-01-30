@@ -1,3 +1,4 @@
+import 'package:ezycourse_my_project/components/comment_section/view_model/comment_controller.dart';
 import 'package:ezycourse_my_project/components/reply_section/view_model/reply_controller.dart';
 import 'package:ezycourse_my_project/components/single_reply.dart';
 import 'package:ezycourse_my_project/core/api_response/reply_api_response/get_reply_api_response.dart';
@@ -204,6 +205,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                                 comment_txt: _replyController.text.toString().trim(),
                               );
                           get_Reply();
+                          ref.read(commentProvider.notifier).getComments(widget.feedID);
                           _replyController.clear();
                         },
                       ),
